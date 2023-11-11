@@ -51,5 +51,22 @@ public enum GameTrackerError implements Error {
     public String message() {
       return "Missing data";
     }
+  },
+
+  PLAYER_SERVICE_PLAYER_NOT_FOUND {
+    @Override
+    public HttpStatus status() {
+      return HttpStatus.NOT_FOUND;
+    }
+
+    @Override
+    public String code() {
+      return this.name();
+    }
+
+    @Override
+    public String message() {
+      return "Player not found";
+    }
   }
 }

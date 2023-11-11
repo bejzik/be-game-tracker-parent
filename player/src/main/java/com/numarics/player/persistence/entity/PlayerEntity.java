@@ -27,5 +27,5 @@ public class PlayerEntity {
   private UUID id;
 
   private String name;
-  private String gameId;
+  private UUID gameId;
 }

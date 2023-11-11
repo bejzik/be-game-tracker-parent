@@ -14,10 +14,10 @@ import com.numarics.player.exception.GameTrackerException;
 import com.numarics.player.model.Player;
 import com.numarics.player.service.IPlayerService;
 
-import static com.numarics.player.exception.GameTrackerError.PLAYER_SERVICE_VALIDATION_FIELDS;
+import static com.numarics.player.exception.GameTrackerError.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,27 +34,10 @@ public class PlayerControllerTest {
   @MockBean
   private IPlayerService playerService;
 
-  @DisplayName("GIVEN game without player name WHEN register is called THEN expect bad request")
-  @Test
-  void registerPlayerWithoutPlayerName() throws Exception {
-    var name = "Player 1";
-    var request = PlayerRegistrationRequest.builder().name(name).build();
-
-    when(playerService.registerPlayer(any())).thenThrow(new GameTrackerException(PLAYER_SERVICE_VALIDATION_FIELDS));
-
-    this.mockMvc.perform(post(PlayerController.PLAYER_CONTROLLER_URL + "/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.code").value(PLAYER_SERVICE_VALIDATION_FIELDS.code()));
-  }
-
-  @DisplayName("GIVEN player name without game id WHEN register is called THEN expect bad request")
+  @DisplayName("GIVEN game id is not sent WHEN register is called THEN expect bad request")
   @Test
   void registerPlayerWithoutGameId() throws Exception {
-    var name = "Player 1";
-    var request = PlayerRegistrationRequest.builder().name(name).build();
+    var request = PlayerRegistrationRequest.builder().build();
 
     when(playerService.registerPlayer(any())).thenThrow(new GameTrackerException(PLAYER_SERVICE_VALIDATION_FIELDS));
 
@@ -66,13 +49,12 @@ public class PlayerControllerTest {
             .andExpect(jsonPath("$.code").value(PLAYER_SERVICE_VALIDATION_FIELDS.code()));
   }
 
-  @DisplayName("GIVEN player name and game id WHEN register is called THEN player is registered")
+  @DisplayName("GIVEN game id WHEN register is called THEN player is registered")
   @Test
   void registerPlayer() throws Exception {
-    var name = "Player 1";
-    var gameId = "Tic-Tac-Toe";
-    var request = PlayerRegistrationRequest.builder().name(name).gameId(gameId).build();
-    var player = Player.builder().id(UUID.randomUUID()).name(name).gameId(gameId).build();
+    var gameId = UUID.randomUUID();
+    var request = PlayerRegistrationRequest.builder().gameId(gameId).build();
+    var player = Player.builder().id(UUID.randomUUID()).name("test").gameId(gameId).build();
 
     when(playerService.registerPlayer(any())).thenReturn(player);
 
@@ -81,7 +63,56 @@ public class PlayerControllerTest {
                     .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value(name))
-            .andExpect(jsonPath("$.gameId").value(gameId));
+            .andExpect(jsonPath("$.id").isNotEmpty())
+            .andExpect(jsonPath("$.gameId").isNotEmpty());
+  }
+
+  @DisplayName("GIVEN player id that does not exist WHEN getPlayer is called THEN expect not found")
+  @Test
+  void getPlayer_notFound() throws Exception {
+    when(playerService.getPlayer(any())).thenThrow(new GameTrackerException(PLAYER_SERVICE_PLAYER_NOT_FOUND));
+
+    this.mockMvc.perform(get(PlayerController.PLAYER_CONTROLLER_URL)
+                    .param("playerId", UUID.randomUUID().toString()))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code").value(PLAYER_SERVICE_PLAYER_NOT_FOUND.code()));
+  }
+
+  @DisplayName("GIVEN player id WHEN getPlayer is called THEN expect player is returned")
+  @Test
+  void getPlayer() throws Exception {
+    var player = Player.builder().id(UUID.randomUUID()).name("test").gameId(UUID.randomUUID()).build();
+    when(playerService.getPlayer(any())).thenReturn(player);
+
+    this.mockMvc.perform(get(PlayerController.PLAYER_CONTROLLER_URL)
+                    .param("playerId", UUID.randomUUID().toString()))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").isNotEmpty())
+            .andExpect(jsonPath("$.name").value(player.getName()))
+            .andExpect(jsonPath("$.gameId").isNotEmpty());
+  }
+
+  @DisplayName("GIVEN player id that does not exist WHEN delete player is called THEN expect not found")
+  @Test
+  void deletePlayer_notFoundPlayer() throws Exception {
+    doThrow(new GameTrackerException(PLAYER_SERVICE_PLAYER_NOT_FOUND)).when(playerService).deletePlayer(any());
+
+    this.mockMvc.perform(delete(PlayerController.PLAYER_CONTROLLER_URL)
+                    .param("playerId", UUID.randomUUID().toString()))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code").value(PLAYER_SERVICE_PLAYER_NOT_FOUND.code()));
+  }
+
+  @DisplayName("GIVEN player id WHEN deletePlayer is called THEN expect player is deleted")
+  @Test
+  void deletePlayer() throws Exception {
+    doNothing().when(playerService).deletePlayer(any());
+    this.mockMvc.perform(get(PlayerController.PLAYER_CONTROLLER_URL)
+                    .param("playerId", UUID.randomUUID().toString()))
+            .andDo(print())
+            .andExpect(status().isOk());
   }
 }

@@ -6,13 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlayerRegistrationRequest {
-  @NotNull(message = "Missing player name")
-  private String name;
   @NotNull(message = "Missing game id")
-  private String gameId;
+  private UUID gameId;
 }

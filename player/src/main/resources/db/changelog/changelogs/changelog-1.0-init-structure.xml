@@ -11,7 +11,7 @@
 				<constraints primaryKey="true"/>
 			</column>
 			<column name="name" type="varchar(255)"/>
-			<column name="game_id" type="varchar(255)"/>
+			<column name="game_id" type="uuid"/>
 		</createTable>
 	</changeSet>
 

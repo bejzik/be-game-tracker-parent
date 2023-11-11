@@ -15,5 +15,5 @@ import java.util.UUID;
 public class Player {
   private UUID id;
   private String name;
-  private String gameId;
+  private UUID gameId;
 }

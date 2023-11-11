@@ -1,5 +1,6 @@
 package com.numarics.player.persistence;
 
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ public class PlayerPersistenceAdapterTest {
   void verifySavingToDb() {
     var player = new PlayerEntity();
     player.setName("test");
-    player.setGameId("game");
+    player.setGameId(UUID.randomUUID());
 
     Assertions.assertNull(player.getId());
     repository.save(player);
