@@ -1,4 +1,4 @@
-package com.numarics.player.exception;
+package com.numarics.commons.exception;
 
 import lombok.Getter;
 import lombok.Setter;

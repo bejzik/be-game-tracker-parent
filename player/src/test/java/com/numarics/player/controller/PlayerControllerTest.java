@@ -9,12 +9,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.numarics.commons.exception.GameTrackerException;
 import com.numarics.player.dto.PlayerRegistrationRequest;
-import com.numarics.player.exception.GameTrackerException;
 import com.numarics.player.model.Player;
 import com.numarics.player.service.IPlayerService;
 
-import static com.numarics.player.exception.GameTrackerError.*;
+import static com.numarics.commons.exception.GameTrackerError.GAME_TRACKER_VALIDATION_FIELDS;
+import static com.numarics.commons.exception.GameTrackerError.PLAYER_SERVICE_PLAYER_NOT_FOUND;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -39,14 +40,14 @@ public class PlayerControllerTest {
   void registerPlayerWithoutGameId() throws Exception {
     var request = PlayerRegistrationRequest.builder().build();
 
-    when(playerService.registerPlayer(any())).thenThrow(new GameTrackerException(PLAYER_SERVICE_VALIDATION_FIELDS));
+    when(playerService.registerPlayer(any())).thenThrow(new GameTrackerException(GAME_TRACKER_VALIDATION_FIELDS));
 
     this.mockMvc.perform(post(PlayerController.PLAYER_CONTROLLER_URL + "/register")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.code").value(PLAYER_SERVICE_VALIDATION_FIELDS.code()));
+            .andExpect(jsonPath("$.code").value(GAME_TRACKER_VALIDATION_FIELDS.code()));
   }
 
   @DisplayName("GIVEN game id WHEN register is called THEN player is registered")

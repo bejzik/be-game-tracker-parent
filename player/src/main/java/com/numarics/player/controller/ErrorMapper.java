@@ -11,12 +11,12 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.numarics.player.exception.GameTrackerException;
+import com.numarics.commons.exception.GameTrackerException;
 import com.numarics.player.model.ErrorResponse;
 import com.numarics.player.service.impl.PlayerServiceImpl;
 
-import static com.numarics.player.exception.GameTrackerError.PLAYER_SERVICE_GENERAL_EXCEPTION;
-import static com.numarics.player.exception.GameTrackerError.PLAYER_SERVICE_VALIDATION_FIELDS;
+import static com.numarics.commons.exception.GameTrackerError.GAME_TRACKER_GENERAL_EXCEPTION;
+import static com.numarics.commons.exception.GameTrackerError.GAME_TRACKER_VALIDATION_FIELDS;
 
 @RestControllerAdvice
 public class ErrorMapper {
@@ -25,7 +25,7 @@ public class ErrorMapper {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handle(Exception e) {
-    return handle(new GameTrackerException(PLAYER_SERVICE_GENERAL_EXCEPTION, e));
+    return handle(new GameTrackerException(GAME_TRACKER_GENERAL_EXCEPTION, e));
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -38,7 +38,7 @@ public class ErrorMapper {
       errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
     }
     return new ResponseEntity<> (
-            new ErrorResponse(PLAYER_SERVICE_VALIDATION_FIELDS.code(),
+            new ErrorResponse(GAME_TRACKER_VALIDATION_FIELDS.code(),
                     errors.toString()),
             HttpStatus.BAD_REQUEST);
   }

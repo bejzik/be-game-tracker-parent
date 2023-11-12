@@ -4,14 +4,14 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import com.numarics.player.configuration.Validation;
+import com.numarics.commons.configuration.Validation;
 import com.numarics.player.dto.PlayerRegistrationRequest;
 import com.numarics.player.model.Player;
 import com.numarics.player.persistence.adapter.IPlayerPersistence;
 import com.numarics.player.service.IPlayerService;
 
-import static com.numarics.player.exception.GameTrackerError.PLAYER_SERVICE_MISSING_DATA;
-import static com.numarics.player.exception.GameTrackerError.PLAYER_SERVICE_PLAYER_NOT_FOUND;
+import static com.numarics.commons.exception.GameTrackerError.PLAYER_SERVICE_MISSING_DATA;
+import static com.numarics.commons.exception.GameTrackerError.PLAYER_SERVICE_PLAYER_NOT_FOUND;
 
 @Service
 public class PlayerServiceImpl implements IPlayerService {

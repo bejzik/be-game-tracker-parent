@@ -18,6 +18,7 @@
     <modules>
         <module>player</module>
         <module>game</module>
+        <module>commons</module>
     </modules>
 
     <properties>

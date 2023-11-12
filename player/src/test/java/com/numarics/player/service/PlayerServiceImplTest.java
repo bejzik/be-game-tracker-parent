@@ -7,14 +7,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.numarics.commons.exception.GameTrackerException;
 import com.numarics.player.dto.PlayerRegistrationRequest;
-import com.numarics.player.exception.GameTrackerException;
 import com.numarics.player.model.Player;
 import com.numarics.player.persistence.adapter.IPlayerPersistence;
 import com.numarics.player.service.impl.PlayerServiceImpl;
 
-import static com.numarics.player.exception.GameTrackerError.PLAYER_SERVICE_MISSING_DATA;
-import static com.numarics.player.exception.GameTrackerError.PLAYER_SERVICE_PLAYER_NOT_FOUND;
+import static com.numarics.commons.exception.GameTrackerError.PLAYER_SERVICE_MISSING_DATA;
+import static com.numarics.commons.exception.GameTrackerError.PLAYER_SERVICE_PLAYER_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
