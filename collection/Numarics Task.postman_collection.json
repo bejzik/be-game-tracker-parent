@@ -1,0 +1,262 @@
+{
+	"info": {
+		"_postman_id": "05bc6ded-1dd9-445f-8321-5e6e9c1b6e2c",
+		"name": "Numarics Task",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17056633"
+	},
+	"item": [
+		{
+			"name": "PlayerService",
+			"item": [
+				{
+					"name": "Register a player",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"playerId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"playerName\": \"John\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{player-service-url}}/player/register",
+							"host": [
+								"{{player-service-url}}"
+							],
+							"path": [
+								"player",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get player",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{player-service-url}}/player/{{playerId}}",
+							"host": [
+								"{{player-service-url}}"
+							],
+							"path": [
+								"player",
+								"{{playerId}}"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search players",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{player-service-url}}/player/search?name=John",
+							"host": [
+								"{{player-service-url}}"
+							],
+							"path": [
+								"player",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "John"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete player",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{player-service-url}}/player/{{playerId}}",
+							"host": [
+								"{{player-service-url}}"
+							],
+							"path": [
+								"player",
+								"{{playerId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GameService",
+			"item": [
+				{
+					"name": "Play Game",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"gameId\", jsonData.id);",
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"playerId\", jsonData.playerId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // use playerId if you have already registered player\n    // \"playerId\": \"{{playerId}}\",\n    \"gameName\": \"Tic-Tac-Toe\",\n    \"playerName\": \"John\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{game-service-url}}/game/play",
+							"host": [
+								"{{game-service-url}}"
+							],
+							"path": [
+								"game",
+								"play"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get game",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{game-service-url}}/game/{{gameId}}",
+							"host": [
+								"{{game-service-url}}"
+							],
+							"path": [
+								"game",
+								"{{gameId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update game status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"gameId\": \"{{gameId}}\",\n    \"status\": \"FINISHED\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{game-service-url}}/game/play",
+							"host": [
+								"{{game-service-url}}"
+							],
+							"path": [
+								"game",
+								"play"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete game",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{game-service-url}}/game/{{gameId}}",
+							"host": [
+								"{{game-service-url}}"
+							],
+							"path": [
+								"game",
+								"{{gameId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search games",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{game-service-url}}/game/search?gameName=Tic&status=NEW&playerName=",
+							"host": [
+								"{{game-service-url}}"
+							],
+							"path": [
+								"game",
+								"search"
+							],
+							"query": [
+								{
+									"key": "gameName",
+									"value": "Tic"
+								},
+								{
+									"key": "status",
+									"value": "NEW"
+								},
+								{
+									"key": "playerName",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -15,7 +15,7 @@ public class GameSpecification {
       List<Predicate> predicates = new ArrayList<>();
 
       if (gameName != null) {
-        predicates.add(criteriaBuilder.equal(root.get("name"), gameName));
+        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + gameName.toLowerCase() + "%"));
       }
 
       if (status != null) {

@@ -19,7 +19,7 @@ public interface IGameService {
 
   Game updateGame(UpdateGameRequest request);
 
-  void deleteGame(UUID gameId);
+  Game deleteGame(UUID gameId);
 
   Page<GamePlayerResponse> searchGames(String gameName,
                                        GameStatus status,

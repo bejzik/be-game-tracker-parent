@@ -14,8 +14,6 @@ import com.numarics.game.model.GameStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateGameRequest {
-  @NotNull(message = "Missing playerId")
-  private UUID playerId;
   @NotNull(message = "Missing gameId")
   private UUID gameId;
   @NotNull(message = "Missing status")

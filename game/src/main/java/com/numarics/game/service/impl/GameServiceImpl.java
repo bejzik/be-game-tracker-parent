@@ -93,12 +93,12 @@ public class GameServiceImpl implements IGameService {
 
   @Transactional
   @Override
-  public void deleteGame(UUID gameId) {
+  public Game deleteGame(UUID gameId) {
     var game = persistence.getGameById(gameId);
     Validation.notNull(game, GAME_SERVICE_GAME_NOT_FOUND);
     game.setStatus(GameStatus.DROPPED);
 
-    persistence.saveGame(game);
+    return persistence.saveGame(game);
   }
 
   @Override
