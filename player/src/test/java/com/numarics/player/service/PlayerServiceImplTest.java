@@ -1,5 +1,6 @@
 package com.numarics.player.service;
 
+import java.util.Arrays;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import com.numarics.commons.exception.GameTrackerException;
+import com.numarics.player.controller.PlayerController;
 import com.numarics.player.dto.PlayerRegistrationRequest;
 import com.numarics.player.model.Player;
 import com.numarics.player.persistence.adapter.IPlayerPersistence;
@@ -19,12 +22,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class PlayerServiceImplTest {
 
   @Mock
   private IPlayerPersistence persistence;
+
+  @Mock
+  private ModelMapper modelMapper;
 
   @InjectMocks
   private PlayerServiceImpl playerService;
@@ -37,11 +47,11 @@ public class PlayerServiceImplTest {
     assertEquals(exception.getError().code(), PLAYER_SERVICE_MISSING_DATA.code());
   }
 
-  @DisplayName("GIVEN game id is not sent WHEN registerPlayer is called THEN throw Exception")
+  @DisplayName("GIVEN playerName is not sent WHEN registerPlayer is called THEN throw Exception")
   @Test
-  void registerPlayer_missingGameId() {
+  void registerPlayer_missingPlayerName() {
     // given
-    var request = new PlayerRegistrationRequest(null);
+    var request = PlayerRegistrationRequest.builder().build();
 
     // when
     var exception = assertThrows(GameTrackerException.class,
@@ -49,12 +59,46 @@ public class PlayerServiceImplTest {
     assertEquals(exception.getError().code(), PLAYER_SERVICE_MISSING_DATA.code());
   }
 
-  @DisplayName("GIVEN game id WHEN registerPlayer is called THEN create new player for the game")
+  @DisplayName("GIVEN playerName only WHEN registerPlayer is called THEN create new player without the game")
+  @Test
+  void registerPlayer_noGame() {
+    // given
+    var request = PlayerRegistrationRequest.builder().playerName("test").build();
+    var player = new Player(UUID.randomUUID(), "test", null);
+    when(persistence.registerPlayer(any())).thenReturn(player);
+
+    // when
+    var response = playerService.registerPlayer(request);
+
+    // then
+    assertNotNull(response);
+    assertEquals(response.getName(), player.getName());
+    assertEquals(response.getGameId(), player.getGameId());
+  }
+
+  @DisplayName("GIVEN playerName and gameId WHEN registerPlayer is called THEN create new player for the game")
   @Test
   void registerPlayer() {
     // given
-    var request = new PlayerRegistrationRequest(UUID.randomUUID());
+    var request = PlayerRegistrationRequest.builder().gameId(UUID.randomUUID()).playerName("test").build();
     var player = new Player(UUID.randomUUID(), "test", request.getGameId());
+    when(persistence.registerPlayer(any())).thenReturn(player);
+
+    // when
+    var response = playerService.registerPlayer(request);
+
+    // then
+    assertNotNull(response);
+    assertEquals(response.getName(), player.getName());
+    assertEquals(response.getGameId(), player.getGameId());
+  }
+
+  @DisplayName("GIVEN playerId and gameId WHEN registerPlayer is called THEN register existing player for the game")
+  @Test
+  void registerPlayer_playerRegistered() {
+    // given
+    var request = PlayerRegistrationRequest.builder().id(UUID.randomUUID()).gameId(UUID.randomUUID()).playerName("test").build();
+    var player = new Player(request.getId(), request.getPlayerName(), request.getGameId());
     when(persistence.registerPlayer(any())).thenReturn(player);
 
     // when
@@ -125,4 +169,33 @@ public class PlayerServiceImplTest {
     playerService.deletePlayer(player.getId());
   }
 
+  @DisplayName("GIVEN nothing WHEN searchPlayers is called THEN expect all players are returned")
+  @Test
+  void searchPlayers_noFilter() throws Exception {
+    var player1 = Player.builder().id(UUID.randomUUID()).name("Mike").gameId(UUID.randomUUID()).build();
+    var player2 = Player.builder().id(UUID.randomUUID()).name("John").gameId(UUID.randomUUID()).build();
+    var list = Arrays.asList(player1, player2);
+    when(persistence.findPlayersByNameContaining(null)).thenReturn(list);
+
+    var actualList = playerService.searchPlayers(null);
+
+    assertNotNull(actualList);
+    assertFalse(actualList.isEmpty());
+    assertEquals(2, actualList.size());
+  }
+
+  @DisplayName("GIVEN name WHEN searchPlayers is called THEN expect players fltered by name are returned")
+  @Test
+  void searchPlayers_withFilter() throws Exception {
+    var player1 = Player.builder().id(UUID.randomUUID()).name("Mike").gameId(UUID.randomUUID()).build();
+    var player2 = Player.builder().id(UUID.randomUUID()).name("Mike2").gameId(UUID.randomUUID()).build();
+    var list = Arrays.asList(player1, player2);
+    when(playerService.searchPlayers(any())).thenReturn(list);
+
+    var actualList = playerService.searchPlayers(null);
+
+    assertNotNull(actualList);
+    assertFalse(actualList.isEmpty());
+    assertEquals(2, actualList.size());
+  }
 }

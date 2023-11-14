@@ -1,4 +1,4 @@
-package com.numarics.player.configuration.configuration;
+package com.numarics.player.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

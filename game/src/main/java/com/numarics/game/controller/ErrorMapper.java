@@ -1,4 +1,4 @@
-package com.numarics.player.controller;
+package com.numarics.game.controller;
 
 import java.util.ArrayList;
 import java.util.List;

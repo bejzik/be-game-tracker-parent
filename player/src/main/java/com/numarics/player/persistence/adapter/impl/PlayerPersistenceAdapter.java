@@ -1,5 +1,6 @@
 package com.numarics.player.persistence.adapter.impl;
 
+import java.util.List;
 import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,12 @@ public class PlayerPersistenceAdapter implements IPlayerPersistence {
   @Override
   public void deletePlayerById(UUID playerId) {
     playerRepository.deleteById(playerId);
+  }
+
+  @Override
+  public List<Player> findPlayersByNameContaining(String name) {
+    return playerRepository.findByNameContainingIgnoreCase(name != null ? name : "")
+            .stream().map(this::mapToDomain).toList();
   }
 
   private PlayerEntity mapToEntity(Player player) {

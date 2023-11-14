@@ -7,13 +7,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
+import com.numarics.game.model.GameStatus;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayGameRequest {
+public class UpdateGameRequest {
+  @NotNull(message = "Missing playerId")
   private UUID playerId;
-  private String playerName;
-  private String gameName;
+  @NotNull(message = "Missing gameId")
+  private UUID gameId;
+  @NotNull(message = "Missing status")
+  private GameStatus status;
 }

@@ -1,4 +1,4 @@
-package com.numarics.player.model;
+package com.numarics.commons.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

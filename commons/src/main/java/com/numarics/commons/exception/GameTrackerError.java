@@ -102,5 +102,38 @@ public enum GameTrackerError implements Error {
     public String message() {
       return "Game not found";
     }
+  },
+
+  GAME_SERVICE_PLAYER_REGISTERED_FOR_ANOTHER_GAME {
+    @Override
+    public HttpStatus status() {
+      return HttpStatus.NOT_FOUND;
+    }
+
+    @Override
+    public String code() {
+      return this.name();
+    }
+
+    @Override
+    public String message() {
+      return "Player does not belong to the game";
+    }
+  },
+  GAME_SERVICE_GAME_COULD_NOT_BE_UPDATED {
+    @Override
+    public HttpStatus status() {
+      return HttpStatus.NOT_FOUND;
+    }
+
+    @Override
+    public String code() {
+      return this.name();
+    }
+
+    @Override
+    public String message() {
+      return "Game cannot be updated - not in valid status";
+    }
   }
 }

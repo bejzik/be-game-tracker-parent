@@ -1,4 +1,4 @@
-package com.numarics.player.dto;
+package com.numarics.game.client.model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

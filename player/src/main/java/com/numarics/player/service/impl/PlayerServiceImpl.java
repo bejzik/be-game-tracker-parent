@@ -1,8 +1,8 @@
 package com.numarics.player.service.impl;
 
+import java.util.List;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import com.numarics.commons.configuration.Validation;
 import com.numarics.player.dto.PlayerRegistrationRequest;
@@ -17,23 +17,21 @@ import static com.numarics.commons.exception.GameTrackerError.PLAYER_SERVICE_PLA
 public class PlayerServiceImpl implements IPlayerService {
 
   private final IPlayerPersistence persistence;
+  private final ModelMapper modelMapper;
 
-  private final Logger logger = LoggerFactory.getLogger(PlayerServiceImpl.class);
-
-  public PlayerServiceImpl(IPlayerPersistence persistence) {
+  public PlayerServiceImpl(IPlayerPersistence persistence, ModelMapper modelMapper) {
     this.persistence = persistence;
+    this.modelMapper = modelMapper;
   }
 
   @Override
   public Player registerPlayer(PlayerRegistrationRequest request) {
     Validation.notNull(request, PLAYER_SERVICE_MISSING_DATA);
-    Validation.notNull(request.getGameId(), PLAYER_SERVICE_MISSING_DATA);
+    Validation.notNull(request.getPlayerName(), PLAYER_SERVICE_MISSING_DATA);
 
-    var player = Player.builder().name(generatePlayerName()).gameId(request.getGameId()).build();
+    var player = mapToDomain(request);
 
-    var response = persistence.registerPlayer(player);
-    logger.info("Registered player with data: " + response.toString());
-    return response;
+    return persistence.registerPlayer(player);
   }
 
   @Override
@@ -42,7 +40,6 @@ public class PlayerServiceImpl implements IPlayerService {
 
     var response = persistence.getPlayerById(playerId);
     Validation.notNull(response, PLAYER_SERVICE_PLAYER_NOT_FOUND);
-    logger.info("Fetched player with data: " + response);
     return response;
   }
 
@@ -54,10 +51,14 @@ public class PlayerServiceImpl implements IPlayerService {
     Validation.notNull(player, PLAYER_SERVICE_PLAYER_NOT_FOUND);
 
     persistence.deletePlayerById(player.getId());
-    logger.info("Deleted player with data: [playerId: " + playerId + "]");
   }
 
-  private String generatePlayerName() {
-    return "player_" + UUID.randomUUID();
+  @Override
+  public List<Player> searchPlayers(String name) {
+    return persistence.findPlayersByNameContaining(name);
+  }
+
+  private Player mapToDomain(PlayerRegistrationRequest request) {
+    return modelMapper.map(request, Player.class);
   }
 }

@@ -1,5 +1,6 @@
 package com.numarics.player.service;
 
+import java.util.List;
 import java.util.UUID;
 import com.numarics.player.dto.PlayerRegistrationRequest;
 import com.numarics.player.model.Player;
@@ -11,4 +12,6 @@ public interface IPlayerService {
   Player getPlayer(UUID playerId);
 
   void deletePlayer(UUID playerId);
+
+  List<Player> searchPlayers(String name);
 }
