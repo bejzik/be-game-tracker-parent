@@ -107,7 +107,7 @@ public enum GameTrackerError implements Error {
   GAME_SERVICE_PLAYER_REGISTERED_FOR_ANOTHER_GAME {
     @Override
     public HttpStatus status() {
-      return HttpStatus.NOT_FOUND;
+      return HttpStatus.BAD_REQUEST;
     }
 
     @Override
@@ -123,7 +123,7 @@ public enum GameTrackerError implements Error {
   GAME_SERVICE_GAME_COULD_NOT_BE_UPDATED {
     @Override
     public HttpStatus status() {
-      return HttpStatus.NOT_FOUND;
+      return HttpStatus.BAD_REQUEST;
     }
 
     @Override

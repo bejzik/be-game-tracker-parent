@@ -50,8 +50,8 @@ public class GameController {
   }
 
   @DeleteMapping("/{gameId}")
-  public void deleteGame(@PathVariable("gameId") UUID gameId) {
-    gameService.deleteGame(gameId);
+  public Game deleteGame(@PathVariable("gameId") UUID gameId) {
+    return gameService.deleteGame(gameId);
   }
 
   @GetMapping("/search")

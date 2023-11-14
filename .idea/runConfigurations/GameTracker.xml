@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="GameTracker" type="CompoundRunConfigurationType">
+    <toRun name="GameApplication" type="Application" />
+    <toRun name="PlayerApplication" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>

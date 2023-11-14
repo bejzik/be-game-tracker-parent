@@ -20,7 +20,7 @@ Import them all together in IntelliJ IDEA or on another IDE.
 
 Run `mvn clean install`
 
-Run both 
+Run both services:
 
 * PlayerApplication (com/numarics/player/PlayerApplication.java)
 * GameApplication (com/numarics/game/GameApplication.java)
