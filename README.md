@@ -25,6 +25,8 @@ Run both services:
 * PlayerApplication (com/numarics/player/PlayerApplication.java)
 * GameApplication (com/numarics/game/GameApplication.java)
 
+Or you can use existing run configurations from .idea/runConfigurations/GameTracker.xml
+
 Application will expose endpoints under:
 
 player-service: [http://localhost:8081](http://localhost:8081)
